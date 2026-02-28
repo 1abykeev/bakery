@@ -1,0 +1,202 @@
+# 📐 Project Plan — Landing Page + Auth Flow
+
+---
+
+## 🗂 Frontend File Structure (Next.js App Router)
+
+```
+frontend/src/
+│
+├── app/
+│   ├── layout.tsx                  ← root layout (fonts, metadata)
+│   ├── page.tsx                    ← landing page (/)
+│   │
+│   ├── (auth)/                     ← route group, no shared layout needed
+│   │   ├── login/
+│   │   │   └── page.tsx            ← /login
+│   │   ├── register/
+│   │   │   └── page.tsx            ← /register
+│   │   └── forgot-password/
+│   │       └── page.tsx            ← /forgot-password (step 1: enter email)
+│   │                                  (step 2: enter code + new password)
+│   │
+│   └── dashboard/
+│       ├── layout.tsx              ← protected layout (checks token)
+│       └── page.tsx                ← /dashboard (placeholder for now)
+│
+├── components/
+│   ├── landing/
+│   │   ├── Navbar.tsx              ← logo + 4 nav links + Sign In / Sign Up buttons
+│   │   ├── Hero.tsx                ← headline, subtext, CTA button
+│   │   ├── Features.tsx            ← features / how it works section
+│   │   ├── Pricing.tsx             ← pricing cards (optional)
+│   │   ├── Testimonials.tsx        ← reviews (optional)
+│   │   └── Footer.tsx              ← footer
+│   │
+│   └── auth/
+│       ├── LoginForm.tsx           ← react-hook-form + zod, calls POST /api/auth/login/
+│       ├── RegisterForm.tsx        ← react-hook-form + zod, calls POST /api/auth/register/
+│       └── ForgotPasswordForm.tsx  ← 2-step form (email → code + new password)
+│
+├── lib/
+│   ├── api.ts                      ← axios instance with baseURL + token interceptor
+│   ├── auth.ts                     ← getToken / setToken / removeToken helpers
+│   └── schemas.ts                  ← all zod validation schemas
+│
+├── hooks/
+│   └── useAuth.ts                  ← simple hook: isLoggedIn, user, logout
+│
+└── types/
+    └── index.ts                    ← User type, AuthResponse type, etc.
+```
+
+---
+
+## 🔐 How Authentication Works
+
+### Token Storage
+- **localStorage** — simple, works on page refresh, no extra libraries needed
+- Key: `access_token` and `refresh_token`
+
+### Flow Overview
+
+```
+Register → POST /api/auth/register/ → auto login → redirect /dashboard
+Login    → POST /api/auth/login/    → save tokens → redirect /dashboard
+Dashboard→ on load check localStorage for token → if missing redirect /login
+Logout   → clear localStorage → redirect /login
+```
+
+### Forgot Password Flow (3 steps on 1 page)
+
+```
+Step 1: User enters email
+        → POST /api/auth/forgot-password/   (backend prints code to terminal)
+
+Step 2: User enters the 6-digit code they saw in terminal
+        → POST /api/auth/verify-reset-code/  (backend validates code)
+
+Step 3: User enters new password + confirm password
+        → POST /api/auth/reset-password/     (backend updates password)
+        → redirect to /login
+```
+
+All 3 steps are on the same `/forgot-password` page, controlled by a `step` state (1, 2, or 3).
+
+### Axios Interceptor
+Every request automatically attaches the token from localStorage:
+```
+Authorization: Bearer <access_token>
+```
+
+### Protected Routes
+`dashboard/layout.tsx` checks for token on mount. If missing → `router.push('/login')`.
+
+---
+
+## 🖥 Backend — `accounts` App Structure
+
+```
+backend/
+├── config/
+│   ├── settings.py
+│   └── urls.py                  ← includes accounts.urls
+│
+└── accounts/
+    ├── models.py                ← CustomUser model
+    ├── serializers.py           ← RegisterSerializer, LoginSerializer, etc.
+    ├── views.py                 ← all auth ViewSets/APIViews
+    ├── urls.py                  ← all /api/auth/ routes
+    └── utils.py                 ← generate_reset_code(), store/validate code
+```
+
+### CustomUser Model (`accounts/models.py`)
+Extends `AbstractBaseUser` or just `AbstractUser`:
+```
+- email (unique, used as USERNAME_FIELD)
+- first_name
+- last_name
+- is_active
+- is_staff
+- date_joined
+```
+We use **email** as the login field, not username.
+
+### API Endpoints
+
+| Method | URL | Description |
+|--------|-----|-------------|
+| POST | `/api/auth/register/` | Create account, return tokens |
+| POST | `/api/auth/login/` | Login with email+password, return tokens |
+| POST | `/api/auth/token/refresh/` | Get new access token via refresh token |
+| POST | `/api/auth/forgot-password/` | Accept email, print code to terminal |
+| POST | `/api/auth/verify-reset-code/` | Validate the code |
+| POST | `/api/auth/reset-password/` | Set new password |
+| GET  | `/api/auth/me/` | Return current user info (protected) |
+
+### Reset Code Storage
+Simple approach — store in Django's cache (in-memory, no Redis needed):
+```python
+from django.core.cache import cache
+# cache.set(f"reset_{email}", code, timeout=600)  # 10 min expiry
+# cache.get(f"reset_{email}")
+```
+Code is a random 6-digit number, printed to terminal with `print()`.
+
+---
+
+## 📋 Zod Schemas (`lib/schemas.ts`)
+
+```typescript
+// Register
+{ email, first_name, last_name, password, confirmPassword }
+// password min 8 chars, confirmPassword must match
+
+// Login
+{ email, password }
+
+// Forgot Password Step 1
+{ email }
+
+// Forgot Password Step 2
+{ code }  // 6 digits
+
+// Forgot Password Step 3
+{ new_password, confirm_password }
+```
+
+---
+
+## 🌐 Landing Page Sections & Content (Russian)
+
+### Navbar
+- Logo (left)
+- Links: `Главная` · `Функции` · `Цены` · `Отзывы`
+- Buttons: `Войти` (outlined) · `Регистрация` (filled)
+
+### Hero
+- Headline: **"Управляйте своим бизнесом без хаоса"**
+- Subtext: *"Простая система для записи, учёта и работы с клиентами"*
+- CTA: **"Начать бесплатно"** → /register
+
+### Features (3 cards)
+- 📅 Онлайн-запись — "Принимайте записи 24/7 без звонков"
+- 💼 Управление персоналом — "Расписание, смены и задачи в одном месте"
+- 📊 Аналитика — "Следите за выручкой и загруженностью в реальном времени"
+
+### Footer
+- Copyright + links
+
+---
+
+## ✅ Build Order
+
+1. `accounts` app — models, serializers, views, urls, settings.py
+2. Test all API endpoints with Postman/Bruno
+3. `lib/api.ts` + `lib/auth.ts` + `lib/schemas.ts`
+4. `Navbar.tsx` + landing `page.tsx`
+5. `LoginForm.tsx` → `/login` page
+6. `RegisterForm.tsx` → `/register` page
+7. `ForgotPasswordForm.tsx` → `/forgot-password` page
+8. `dashboard/layout.tsx` (protected) + placeholder `dashboard/page.tsx`
+9. Wire everything together, test full flow
