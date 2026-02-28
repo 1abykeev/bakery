@@ -2,6 +2,8 @@
 
 "use client";
 
+import { useAuth } from "@/hooks/useAuth";
+
 export default function DashboardPage() {
   const { user, logout } = useAuth();
 
