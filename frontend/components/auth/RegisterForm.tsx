@@ -1,4 +1,4 @@
-// frontend/src/components/auth/LoginForm.tsx
+// frontend/src/components/auth/RegisterForm.tsx
 
 "use client";
 
@@ -9,10 +9,10 @@ import Link from "next/link";
 import { useState } from "react";
 import api from "@/lib/api";
 import { setTokens, setUser } from "@/lib/auth";
-import { loginSchema, LoginInput } from "@/lib/schemas";
+import { registerSchema, RegisterInput } from "@/lib/schemas";
 import { AuthResponse } from "@/types";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
 
@@ -20,27 +20,33 @@ export default function LoginForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
   });
 
-  async function onSubmit(data: LoginInput) {
+  async function onSubmit(data: RegisterInput) {
     setServerError("");
     try {
-      const res = await api.post<AuthResponse>("/auth/login/", data);
+      const res = await api.post<AuthResponse>("/auth/register/", data);
       setTokens(res.data.tokens.access, res.data.tokens.refresh);
       setUser(res.data.user);
       router.push("/dashboard");
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { detail?: string } } };
-      setServerError(error.response?.data?.detail || "Ошибка входа");
+      const error = err as { response?: { data?: Record<string, string[]> } };
+      const errData = error.response?.data;
+      if (errData) {
+        const first = Object.values(errData)[0];
+        setServerError(Array.isArray(first) ? first[0] : "Ошибка регистрации");
+      } else {
+        setServerError("Ошибка регистрации");
+      }
     }
   }
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-stone-800 mb-2">Войти</h1>
-      <p className="text-stone-500 mb-8">С возвращением!</p>
+      <h1 className="text-2xl font-bold text-stone-800 mb-2">Регистрация</h1>
+      <p className="text-stone-500 mb-8">Создайте аккаунт бесплатно</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {serverError && (
@@ -48,6 +54,31 @@ export default function LoginForm() {
             {serverError}
           </div>
         )}
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Имя</label>
+            <input
+              {...register("first_name")}
+              placeholder="Иван"
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+            />
+            {errors.first_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.first_name.message}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Фамилия</label>
+            <input
+              {...register("last_name")}
+              placeholder="Иванов"
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+            />
+            {errors.last_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.last_name.message}</p>
+            )}
+          </div>
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
@@ -63,20 +94,28 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-stone-700">Пароль</label>
-            <Link href="/forgot-password" className="text-sm text-amber-600 hover:text-amber-700">
-              Забыли пароль?
-            </Link>
-          </div>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Пароль</label>
           <input
             {...register("password")}
             type="password"
-            placeholder="••••••••"
+            placeholder="Минимум 8 символов"
             className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Подтверждение пароля</label>
+          <input
+            {...register("confirm_password")}
+            type="password"
+            placeholder="Повторите пароль"
+            className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+          />
+          {errors.confirm_password && (
+            <p className="text-red-500 text-sm mt-1">{errors.confirm_password.message}</p>
           )}
         </div>
 
@@ -85,14 +124,14 @@ export default function LoginForm() {
           disabled={isSubmitting}
           className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
         >
-          {isSubmitting ? "Входим..." : "Войти"}
+          {isSubmitting ? "Создаём аккаунт..." : "Зарегистрироваться"}
         </button>
       </form>
 
       <p className="text-center text-stone-500 mt-6 text-sm">
-        Нет аккаунта?{" "}
-        <Link href="/register" className="text-amber-600 font-medium hover:text-amber-700">
-          Зарегистрироваться
+        Уже есть аккаунт?{" "}
+        <Link href="/login" className="text-amber-600 font-medium hover:text-amber-700">
+          Войти
         </Link>
       </p>
     </div>

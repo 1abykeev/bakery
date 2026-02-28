@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model, authenticate
 
@@ -18,7 +18,6 @@ User = get_user_model()
 
 
 def get_tokens_for_user(user):
-    """Return JWT access and refresh tokens for a user."""
     refresh = RefreshToken.for_user(user)
     return {
         "refresh": str(refresh),
@@ -27,10 +26,14 @@ def get_tokens_for_user(user):
 
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
+        print("REGISTER REQUEST DATA:", request.data)
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            print("USER CREATED:", user.email)
             tokens = get_tokens_for_user(user)
             return Response(
                 {
@@ -39,11 +42,15 @@ class RegisterView(APIView):
                 },
                 status=status.HTTP_201_CREATED,
             )
+        print("REGISTER ERRORS:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
+        print("LOGIN REQUEST DATA:", request.data)
         email = request.data.get("email", "").strip().lower()
         password = request.data.get("password", "")
 
@@ -54,6 +61,7 @@ class LoginView(APIView):
             )
 
         user = authenticate(request, username=email, password=password)
+        print("AUTHENTICATED USER:", user)
 
         if not user:
             return Response(
@@ -85,6 +93,8 @@ class MeView(APIView):
 
 
 class ForgotPasswordView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         if not serializer.is_valid():
@@ -92,12 +102,9 @@ class ForgotPasswordView(APIView):
 
         email = serializer.validated_data["email"].lower()
 
-        # Always return success even if email not found (security best practice)
         if User.objects.filter(email=email).exists():
             code = generate_reset_code()
             store_reset_code(email, code)
-
-            # Print code to terminal — copy-paste during development
             print(f"\n{'='*40}")
             print(f"  PASSWORD RESET CODE for {email}")
             print(f"  Code: {code}")
@@ -111,6 +118,8 @@ class ForgotPasswordView(APIView):
 
 
 class VerifyResetCodeView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = VerifyResetCodeSerializer(data=request.data)
         if not serializer.is_valid():
@@ -118,7 +127,6 @@ class VerifyResetCodeView(APIView):
 
         email = serializer.validated_data["email"].lower()
         code = serializer.validated_data["code"]
-
         stored_code = get_reset_code(email)
 
         if not stored_code or stored_code != code:
@@ -131,6 +139,8 @@ class VerifyResetCodeView(APIView):
 
 
 class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         if not serializer.is_valid():
