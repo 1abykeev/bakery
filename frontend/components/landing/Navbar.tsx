@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "Главная", href: "#home" },
@@ -14,6 +15,12 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isLanding = pathname === "/";
+
+  function getHref(anchor: string) {
+    return isLanding ? anchor : `/${anchor}`;
+  }
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-amber-50/80 backdrop-blur-md border-b border-amber-100">
@@ -28,7 +35,7 @@ export default function Navbar() {
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={getHref(link.href)}
               className="text-sm text-stone-600 hover:text-amber-700 transition font-medium"
             >
               {link.label}
@@ -72,7 +79,7 @@ export default function Navbar() {
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={getHref(link.href)}
               onClick={() => setMobileOpen(false)}
               className="block text-stone-700 font-medium py-1"
             >
