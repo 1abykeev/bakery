@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
 import api from "@/lib/api";
 import { setTokens, setUser } from "@/lib/auth";
 import { loginSchema, LoginInput } from "@/lib/schemas";
@@ -14,7 +13,6 @@ import { AuthResponse } from "@/types";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [serverError, setServerError] = useState("");
 
   const {
     register,
@@ -25,7 +23,6 @@ export default function LoginForm() {
   });
 
   async function onSubmit(data: LoginInput) {
-    setServerError("");
     try {
       const res = await api.post<AuthResponse>("/auth/login/", data);
       setTokens(res.data.tokens.access, res.data.tokens.refresh);
@@ -33,7 +30,8 @@ export default function LoginForm() {
       router.push("/dashboard");
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } };
-      setServerError(error.response?.data?.detail || "Ошибка входа");
+      const message = error.response?.data?.detail || "Ошибка входа";
+      alert(message);
     }
   }
 
@@ -43,12 +41,6 @@ export default function LoginForm() {
       <p className="text-stone-500 mb-8">С возвращением!</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {serverError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
-            {serverError}
-          </div>
-        )}
-
         <div>
           <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
           <input
