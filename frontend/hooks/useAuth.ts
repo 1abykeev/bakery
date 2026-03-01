@@ -1,6 +1,8 @@
 // frontend/src/hooks/useAuth.ts
 
 "use client";
+
+import { useRouter } from "next/navigation";
 import { clearTokens, getUser, isLoggedIn } from "@/lib/auth";
 import { User } from "@/types";
 
