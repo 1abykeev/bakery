@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     "corsheaders",
     # Local
     "accounts",
+    "bakery",
+    "staff",
 ]
 
 MIDDLEWARE = [
