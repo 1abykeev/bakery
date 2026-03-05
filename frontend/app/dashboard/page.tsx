@@ -5,24 +5,36 @@
 import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-stone-800 mb-2">Дашборд</h1>
-        {user && (
-          <p className="text-stone-500 mb-6">
-            Добро пожаловать, {user.full_name}!
-          </p>
-        )}
-        <p className="text-stone-400 text-sm mb-8">Здесь будет ваш дашборд</p>
-        <button
-          onClick={logout}
-          className="bg-stone-200 hover:bg-stone-300 text-stone-700 font-medium px-6 py-2 rounded-xl transition"
-        >
-          Выйти
-        </button>
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-stone-800">
+          Кош келиңиз{user ? `, ${user.first_name}` : ""}! 👋
+        </h1>
+        <p className="text-stone-500 mt-1 text-sm">
+          НанБар башкаруу панелине кош келдиңиз
+        </p>
+      </div>
+
+      {/* Quick stats placeholder cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "Кызматкерлер", value: "—", icon: "👥", color: "bg-blue-50 border-blue-100" },
+          { label: "Продукттар", value: "—", icon: "📦", color: "bg-amber-50 border-amber-100" },
+          { label: "Бүгүнкү сатуу", value: "—", icon: "💰", color: "bg-green-50 border-green-100" },
+          { label: "Склад", value: "—", icon: "🏪", color: "bg-purple-50 border-purple-100" },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className={`border rounded-2xl p-5 ${stat.color}`}
+          >
+            <div className="text-2xl mb-3">{stat.icon}</div>
+            <p className="text-2xl font-bold text-stone-800">{stat.value}</p>
+            <p className="text-stone-500 text-sm mt-1">{stat.label}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
