@@ -7,10 +7,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-  { label: "Главная", href: "#home" },
-  { label: "Функции", href: "#features" },
-  { label: "Цены", href: "#pricing" },
-  { label: "Отзывы", href: "#testimonials" },
+  { label: "Башкы бет", href: "#home" },
+  { label: "Функциялар", href: "#features" },
+  { label: "Баалар", href: "#pricing" },
+  { label: "Пикирлер", href: "#testimonials" },
 ];
 
 export default function Navbar() {
@@ -49,13 +49,13 @@ export default function Navbar() {
             href="/login"
             className="text-sm font-medium text-stone-600 hover:text-amber-700 px-4 py-2 rounded-xl transition"
           >
-            Войти
+            Кирүү
           </Link>
           <Link
             href="/register"
             className="text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-white px-5 py-2 rounded-xl transition"
           >
-            Регистрация
+            Катталуу
           </Link>
         </div>
 
@@ -88,10 +88,10 @@ export default function Navbar() {
           ))}
           <div className="pt-3 flex flex-col gap-2 border-t border-amber-100">
             <Link href="/login" className="text-center text-stone-600 font-medium py-2 rounded-xl border border-stone-200">
-              Войти
+              Кирүү
             </Link>
             <Link href="/register" className="text-center bg-amber-500 text-white font-semibold py-2 rounded-xl">
-              Регистрация
+              Катталуу
             </Link>
           </div>
         </div>
