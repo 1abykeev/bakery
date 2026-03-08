@@ -74,9 +74,27 @@ export interface WorkLog {
   id: number;
   staff: number;
   staff_name: string;
-  date: string;        // "YYYY-MM-DD"
-  start_time: string;  // "HH:MM:SS"
-  end_time: string;    // "HH:MM:SS"
+  date: string;
+  start_time: string;
+  end_time: string;
   hours_worked: number;
   created_at: string;
+}
+
+export interface ClientPurchase {
+  sale_id: number;
+  date: string;
+  product_name: string;
+  quantity: number;
+  total_price: string;
+}
+
+export interface Client {
+  name: string;
+  phone: string;
+  total_spent: number;
+  visit_count: number;
+  last_visit: string;   // "YYYY-MM-DD"
+  products: string[];   // unique product names
+  purchases: ClientPurchase[];
 }
