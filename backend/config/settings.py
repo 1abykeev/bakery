@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     "accounts",
     "bakery",
     "staff",
-    "products"
+    "products",
+    "sales",
 ]
 
 MIDDLEWARE = [

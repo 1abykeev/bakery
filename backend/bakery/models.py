@@ -20,8 +20,6 @@ class Staff(models.Model):
 
 
 # ─── 2. EXPENSE TYPE ──────────────────────────────────────
-# e.g. "Sugar", "Flour", "Butter"
-# Defined once per owner, reused across many products
 class Expense(models.Model):
     owner      = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='expenses'
@@ -30,7 +28,7 @@ class Expense(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('owner', 'name')  # same name allowed for different owners
+        unique_together = ('owner', 'name')
 
     def __str__(self):
         return self.name
@@ -50,9 +48,7 @@ class Product(models.Model):
         return self.name
 
 
-# ─── 4. PRODUCT EXPENSE (Many-to-Many with cost) ──────────
-# e.g. Donut -> Sugar: 15 som, Flour: 10 som
-# No owner field needed — cascades from Product
+# ─── 4. PRODUCT EXPENSE ───────────────────────────────────
 class ProductExpense(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='expenses'
@@ -70,8 +66,6 @@ class ProductExpense(models.Model):
 
 
 # ─── 5. WORK LOG ──────────────────────────────────────────
-# Admin enters arrival and departure time for each staff each day
-# No owner field needed — cascades from Staff
 class WorkLog(models.Model):
     staff      = models.ForeignKey(
         Staff, on_delete=models.CASCADE, related_name='work_logs'
@@ -93,8 +87,6 @@ class WorkLog(models.Model):
 
 
 # ─── 6. SALE ──────────────────────────────────────────────
-# Every sale reduces product stock and records client info
-# No owner field needed — cascades from Product
 class Sale(models.Model):
     product      = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='sales'
@@ -103,8 +95,23 @@ class Sale(models.Model):
     total_price  = models.DecimalField(max_digits=10, decimal_places=2)
     client_name  = models.CharField(max_length=100, blank=True)
     client_phone = models.CharField(max_length=20, blank=True)
-    sold_at      = models.DateTimeField()
+    sold_at      = models.DateField()                          # date only
     created_at   = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product.name} x{self.quantity} - {self.sold_at.date()}"
+        return f"{self.product.name} x{self.quantity} - {self.sold_at}"
+
+
+# ─── 7. SALE EXPENSE SNAPSHOT ─────────────────────────────
+# Frozen copy of product expenses at the exact moment of sale.
+# Using plain strings (not FKs) so deleting an expense type
+# never breaks historical analytics.
+class SaleExpenseSnapshot(models.Model):
+    sale         = models.ForeignKey(
+        Sale, on_delete=models.CASCADE, related_name='expense_snapshots'
+    )
+    expense_name = models.CharField(max_length=100)   # frozen name
+    cost         = models.DecimalField(max_digits=10, decimal_places=2)  # frozen cost
+
+    def __str__(self):
+        return f"Sale#{self.sale_id} -> {self.expense_name}: {self.cost}"

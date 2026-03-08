@@ -49,3 +49,23 @@ export interface Product {
   expenses: ProductExpense[];
   created_at: string;
 }
+
+export interface SaleExpenseSnapshot {
+  id: number;
+  expense_name: string;
+  cost: string;
+}
+
+export interface Sale {
+  id: number;
+  product_id: number;
+  product_name: string;
+  product_price: string;
+  quantity: number;
+  total_price: string;
+  client_name: string;
+  client_phone: string;
+  sold_at: string;
+  expense_snapshots: SaleExpenseSnapshot[];
+  created_at: string;
+}
