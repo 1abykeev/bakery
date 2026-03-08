@@ -94,7 +94,48 @@ export interface Client {
   phone: string;
   total_spent: number;
   visit_count: number;
-  last_visit: string;   // "YYYY-MM-DD"
-  products: string[];   // unique product names
+  last_visit: string;
+  products: string[];
   purchases: ClientPurchase[];
+}
+
+// ── Analytics ──────────────────────────────────────────────────────────────
+
+export interface DailyRevenue {
+  date: string;     // "YYYY-MM-DD"
+  revenue: number;
+}
+
+export interface TopProduct {
+  name: string;
+  units_sold: number;
+  revenue: number;
+}
+
+export interface ExpenseBreakdown {
+  name: string;
+  total_cost: number;
+}
+
+export interface StaffSalary {
+  name: string;
+  profession: string;
+  hours: number;
+  salary: number;
+  salary_hour: number;
+}
+
+export interface AnalyticsData {
+  date_from: string;
+  date_to: string;
+  revenue: number;
+  production_cost: number;
+  salary_cost: number;
+  net_profit: number;
+  total_sales_count: number;
+  unique_clients: number;
+  daily_revenue: DailyRevenue[];
+  top_products: TopProduct[];
+  expense_breakdown: ExpenseBreakdown[];
+  staff_salary: StaffSalary[];
 }
