@@ -19,12 +19,33 @@ export interface AuthResponse {
   tokens: AuthTokens;
 }
 
-
 export interface Staff {
   id: number;
   name: string;
   phone: string;
   profession: string;
   salary_hour: string;
+  created_at: string;
+}
+
+export interface Expense {
+  id: number;
+  name: string;
+  created_at: string;
+}
+
+export interface ProductExpense {
+  id: number;
+  expense_id: number;
+  expense_name: string;
+  cost: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  price: string;
+  stock: number;
+  expenses: ProductExpense[];
   created_at: string;
 }
