@@ -69,3 +69,14 @@ export interface Sale {
   expense_snapshots: SaleExpenseSnapshot[];
   created_at: string;
 }
+
+export interface WorkLog {
+  id: number;
+  staff: number;
+  staff_name: string;
+  date: string;        // "YYYY-MM-DD"
+  start_time: string;  // "HH:MM:SS"
+  end_time: string;    // "HH:MM:SS"
+  hours_worked: number;
+  created_at: string;
+}
