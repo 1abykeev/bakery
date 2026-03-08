@@ -1,7 +1,7 @@
 # backend/bakery/admin.py
 
 from django.contrib import admin
-from .models import Staff, Expense, Product, ProductExpense, WorkLog, Sale
+from .models import Staff, Expense, Product, ProductExpense, WorkLog, Sale, SaleExpenseSnapshot
 
 
 @admin.register(Staff)
@@ -76,4 +76,15 @@ class SaleAdmin(admin.ModelAdmin):
         (None,           {'fields': ('product', 'quantity', 'total_price')}),
         ('Client Info',  {'fields': ('client_name', 'client_phone')}),
         ('Timing',       {'fields': ('sold_at',)}),
+    )
+
+
+@admin.register(SaleExpenseSnapshot)
+class SaleExpenseSnapshotAdmin(admin.ModelAdmin):
+    list_display  = ('id', 'sale', 'expense_name', 'cost')
+    search_fields = ('expense_name', 'sale__id')
+    ordering      = ('id',)
+
+    fieldsets = (
+        (None, {'fields': ('sale', 'expense_name', 'cost')}),
     )
