@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-production")
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # ───────────────────────────────────────────
 # Apps
@@ -74,9 +74,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE_NAME", "saas_db"),
-        "USER": os.getenv("DATABASE_USER", "postgres"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD", "postgres"),
+        "NAME": os.getenv("DATABASE_NAME", "nanbar_db"),
+        "USER": os.getenv("DATABASE_USER", "nanbar_user"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD", "nanbar_pass"),
         "HOST": os.getenv("DATABASE_HOST", "localhost"),
         "PORT": os.getenv("DATABASE_PORT", "5432"),
     }
@@ -106,6 +106,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ───────────────────────────────────────────
