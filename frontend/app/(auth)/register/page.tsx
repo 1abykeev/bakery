@@ -2,7 +2,7 @@
 
 import RegisterForm from "@/components/auth/RegisterForm";
 
-export const metadata = { title: "Регистрация — Sweetflow" };
+export const metadata = { title: "Катталуу — Sweetflow" };
 
 export default function RegisterPage() {
   return <RegisterForm />;

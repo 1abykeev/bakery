@@ -6,48 +6,48 @@ const plans = [
   {
     name: "Старт",
     price: "0",
-    period: "навсегда",
-    description: "Для тех, кто только начинает",
+    period: "дайыма",
+    description: "Жаңы баштагандар үчүн",
     features: [
-      "До 50 записей в месяц",
-      "1 сотрудник",
-      "Базовая аналитика",
-      "Онлайн-запись",
+      "Айына 50 жазылууга чейин",
+      "1 кызматкер",
+      "Негизги аналитика",
+      "Онлайн-жазылуу",
     ],
-    cta: "Начать бесплатно",
+    cta: "Бекер баштоо",
     href: "/register",
     highlighted: false,
   },
   {
     name: "Бизнес",
     price: "1 990",
-    period: "в месяц",
-    description: "Для активно растущего бизнеса",
+    period: "айына",
+    description: "Активдүү өсүп жаткан бизнес үчүн",
     features: [
-      "Неограниченные записи",
-      "До 10 сотрудников",
-      "Расширенная аналитика",
-      "SMS-напоминания",
-      "База клиентов",
-      "Приоритетная поддержка",
+      "Чексиз жазылуулар",
+      "10 кызматкерге чейин",
+      "Кеңейтилген аналитика",
+      "SMS-эскертмелер",
+      "Кардарлар базасы",
+      "Артыкчылыктуу колдоо",
     ],
-    cta: "Попробовать 14 дней",
+    cta: "14 күн сынап көрүү",
     href: "/register",
     highlighted: true,
   },
   {
     name: "Про",
     price: "4 990",
-    period: "в месяц",
-    description: "Для сети и франшизы",
+    period: "айына",
+    description: "Тармак жана франшиза үчүн",
     features: [
-      "Всё из Бизнеса",
-      "Неограниченно сотрудников",
-      "Несколько филиалов",
-      "API-доступ",
-      "Выделенный менеджер",
+      "Бизнестин баары",
+      "Чексиз кызматкерлер",
+      "Бир нече филиал",
+      "API-мүмкүнчүлүк",
+      "Жеке менеджер",
     ],
-    cta: "Связаться с нами",
+    cta: "Биз менен байланышуу",
     href: "/register",
     highlighted: false,
   },
@@ -59,9 +59,9 @@ export default function Pricing() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-stone-800 mb-4">
-            Понятные цены
+            Түшүнүктүү баалар
           </h2>
-          <p className="text-lg text-stone-500">Без скрытых платежей и сюрпризов</p>
+          <p className="text-lg text-stone-500">Жашырын төлөмдөр жана сюрприздер жок</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,7 +95,7 @@ export default function Pricing() {
                       plan.highlighted ? "text-white" : "text-stone-800"
                     }`}
                   >
-                    {plan.price === "0" ? "Бесплатно" : `${plan.price} ₽`}
+                    {plan.price === "0" ? "Бекер" : `${plan.price} ₽`}
                   </span>
                   {plan.price !== "0" && (
                     <span

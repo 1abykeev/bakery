@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { clearTokens, getUser, isLoggedIn } from "@/lib/auth";
 import { User } from "@/types";
@@ -12,8 +13,13 @@ export function useAuth(): {
   logout: () => void;
 } {
   const router = useRouter();
-  const loggedIn = typeof window !== "undefined" ? isLoggedIn() : false;
-  const user = typeof window !== "undefined" ? getUser() : null;
+  const [user, setUser] = useState<User | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setUser(getUser());
+    setLoggedIn(isLoggedIn());
+  }, []);
 
   function logout() {
     clearTokens();
