@@ -36,10 +36,10 @@ export default function ForgotPasswordForm() {
     try {
       await api.post("/auth/forgot-password/", { email: data.email });
       setEmail(data.email);
-      setSuccessMsg("Код отправлен. Проверьте терминал сервера.");
+      setSuccessMsg("Код жөнөтүлдү. Сервер терминалын текшериңиз.");
       setStep(2);
     } catch {
-      setServerError("Ошибка. Попробуйте ещё раз.");
+      setServerError("Ката кетти. Кайра аракет кылыңыз.");
     }
   }
 
@@ -55,7 +55,7 @@ export default function ForgotPasswordForm() {
       setSuccessMsg("");
       setStep(3);
     } catch {
-      setServerError("Неверный или истёкший код.");
+      setServerError("Код туура эмес же мөөнөтү өтүп кеткен.");
     }
   }
 
@@ -75,15 +75,15 @@ export default function ForgotPasswordForm() {
       });
       router.push("/login");
     } catch {
-      setServerError("Ошибка сброса пароля. Начните заново.");
+      setServerError("Сырсөздү калыбына келтирүүдө ката кетти. Башынан баштаңыз.");
     }
   }
 
-  const stepLabels = ["Email", "Код", "Новый пароль"];
+  const stepLabels = ["Email", "Код", "Жаңы сырсөз"];
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-stone-800 mb-2">Восстановление пароля</h1>
+      <h1 className="text-2xl font-bold text-stone-800 mb-2">Сырсөздү калыбына келтирүү</h1>
 
       {/* Step indicator */}
       <div className="flex items-center gap-2 mb-8">
@@ -125,7 +125,7 @@ export default function ForgotPasswordForm() {
       {/* Step 1 */}
       {step === 1 && (
         <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
-          <p className="text-stone-500 text-sm">Введите email вашего аккаунта.</p>
+          <p className="text-stone-500 text-sm">Аккаунтуңуздун emailин киргизиңиз.</p>
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
             <input
@@ -143,7 +143,7 @@ export default function ForgotPasswordForm() {
             disabled={emailForm.formState.isSubmitting}
             className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
           >
-            {emailForm.formState.isSubmitting ? "Отправляем..." : "Получить код"}
+            {emailForm.formState.isSubmitting ? "Жөнөтүлүүдө..." : "Код алуу"}
           </button>
         </form>
       )}
@@ -152,10 +152,10 @@ export default function ForgotPasswordForm() {
       {step === 2 && (
         <form onSubmit={codeForm.handleSubmit(onCodeSubmit)} className="space-y-4">
           <p className="text-stone-500 text-sm">
-            Введите 6-значный код из терминала сервера.
+            Сервер терминалындагы 6 орундуу кодду киргизиңиз.
           </p>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Код подтверждения</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Тастыктоо коду</label>
             <input
               {...codeForm.register("code")}
               placeholder="123456"
@@ -171,10 +171,10 @@ export default function ForgotPasswordForm() {
             disabled={codeForm.formState.isSubmitting}
             className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
           >
-            {codeForm.formState.isSubmitting ? "Проверяем..." : "Подтвердить"}
+            {codeForm.formState.isSubmitting ? "Текшерилүүдө..." : "Тастыктоо"}
           </button>
           <button type="button" onClick={() => setStep(1)} className="w-full text-stone-400 text-sm hover:text-stone-600">
-            ← Назад
+            ← Артка
           </button>
         </form>
       )}
@@ -182,13 +182,13 @@ export default function ForgotPasswordForm() {
       {/* Step 3 */}
       {step === 3 && (
         <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
-          <p className="text-stone-500 text-sm">Придумайте новый пароль.</p>
+          <p className="text-stone-500 text-sm">Жаңы сырсөз ойлоп табыңыз.</p>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Новый пароль</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Жаңы сырсөз</label>
             <input
               {...passwordForm.register("new_password")}
               type="password"
-              placeholder="Минимум 8 символов"
+              placeholder="Кеминде 8 белги"
               className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             />
             {passwordForm.formState.errors.new_password && (
@@ -196,11 +196,11 @@ export default function ForgotPasswordForm() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Подтверждение пароля</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Сырсөздү тастыктоо</label>
             <input
               {...passwordForm.register("confirm_password")}
               type="password"
-              placeholder="Повторите пароль"
+              placeholder="Сырсөздү кайталаңыз"
               className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             />
             {passwordForm.formState.errors.confirm_password && (
@@ -212,14 +212,14 @@ export default function ForgotPasswordForm() {
             disabled={passwordForm.formState.isSubmitting}
             className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
           >
-            {passwordForm.formState.isSubmitting ? "Сохраняем..." : "Сохранить пароль"}
+            {passwordForm.formState.isSubmitting ? "Сакталууда..." : "Сырсөздү сактоо"}
           </button>
         </form>
       )}
 
       <p className="text-center text-stone-500 mt-6 text-sm">
         <Link href="/login" className="text-amber-600 font-medium hover:text-amber-700">
-          ← Вернуться к входу
+          ← Кирүүгө кайтуу
         </Link>
       </p>
     </div>

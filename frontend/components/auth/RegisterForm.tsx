@@ -36,17 +36,17 @@ export default function RegisterForm() {
       const errData = error.response?.data;
       if (errData) {
         const first = Object.values(errData)[0];
-        setServerError(Array.isArray(first) ? first[0] : "Ошибка регистрации");
+        setServerError(Array.isArray(first) ? first[0] : "Катталууда ката кетти");
       } else {
-        setServerError("Ошибка регистрации");
+        setServerError("Катталууда ката кетти");
       }
     }
   }
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-stone-800 mb-2">Регистрация</h1>
-      <p className="text-stone-500 mb-8">Создайте аккаунт бесплатно</p>
+      <h1 className="text-2xl font-bold text-stone-800 mb-2">Катталуу</h1>
+      <p className="text-stone-500 mb-8">Акысыз аккаунт түзүңүз</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {serverError && (
@@ -57,10 +57,10 @@ export default function RegisterForm() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Имя</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Аты</label>
             <input
               {...register("first_name")}
-              placeholder="Иван"
+              placeholder="Айбек"
               className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             />
             {errors.first_name && (
@@ -68,10 +68,10 @@ export default function RegisterForm() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Фамилия</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Фамилиясы</label>
             <input
               {...register("last_name")}
-              placeholder="Иванов"
+              placeholder="Уулу"
               className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             />
             {errors.last_name && (
@@ -94,11 +94,11 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Пароль</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Сырсөз</label>
           <input
             {...register("password")}
             type="password"
-            placeholder="Минимум 8 символов"
+            placeholder="Кеминде 8 белги"
             className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
           />
           {errors.password && (
@@ -107,11 +107,11 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">Подтверждение пароля</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1">Сырсөздү тастыктоо</label>
           <input
             {...register("confirm_password")}
             type="password"
-            placeholder="Повторите пароль"
+            placeholder="Сырсөздү кайталаңыз"
             className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
           />
           {errors.confirm_password && (
@@ -124,14 +124,14 @@ export default function RegisterForm() {
           disabled={isSubmitting}
           className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
         >
-          {isSubmitting ? "Создаём аккаунт..." : "Зарегистрироваться"}
+          {isSubmitting ? "Аккаунт түзүлүүдө..." : "Катталуу"}
         </button>
       </form>
 
       <p className="text-center text-stone-500 mt-6 text-sm">
-        Уже есть аккаунт?{" "}
+        Аккаунтуңуз барбы?{" "}
         <Link href="/login" className="text-amber-600 font-medium hover:text-amber-700">
-          Войти
+          Кирүү
         </Link>
       </p>
     </div>

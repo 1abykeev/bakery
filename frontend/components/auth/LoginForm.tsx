@@ -30,15 +30,15 @@ export default function LoginForm() {
       router.push("/dashboard");
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } };
-      const message = error.response?.data?.detail || "Ошибка входа";
+      const message = error.response?.data?.detail || "Кирүүдө ката кетти";
       alert(message);
     }
   }
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-stone-800 mb-2">Войти</h1>
-      <p className="text-stone-500 mb-8">С возвращением!</p>
+      <h1 className="text-2xl font-bold text-stone-800 mb-2">Кирүү</h1>
+      <p className="text-stone-500 mb-8">Кайра келгениңизге кош келиңиз!</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
@@ -56,9 +56,9 @@ export default function LoginForm() {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-stone-700">Пароль</label>
+            <label className="block text-sm font-medium text-stone-700">Сырсөз</label>
             <Link href="/forgot-password" className="text-sm text-amber-600 hover:text-amber-700">
-              Забыли пароль?
+              Сырсөздү унуттуңузбу?
             </Link>
           </div>
           <input
@@ -77,14 +77,14 @@ export default function LoginForm() {
           disabled={isSubmitting}
           className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
         >
-          {isSubmitting ? "Входим..." : "Войти"}
+          {isSubmitting ? "Кирүүдө..." : "Кирүү"}
         </button>
       </form>
 
       <p className="text-center text-stone-500 mt-6 text-sm">
-        Нет аккаунта?{" "}
+        Аккаунтуңуз жокпу?{" "}
         <Link href="/register" className="text-amber-600 font-medium hover:text-amber-700">
-          Зарегистрироваться
+          Катталуу
         </Link>
       </p>
     </div>
