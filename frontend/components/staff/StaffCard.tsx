@@ -21,14 +21,6 @@ function getProfessionColor(profession: string) {
   return PROFESSION_COLORS[profession] || PROFESSION_COLORS.default;
 }
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
 
 export default function StaffCard({ staff, onDelete }: Props) {
   return (
@@ -36,8 +28,8 @@ export default function StaffCard({ staff, onDelete }: Props) {
       <div className="flex items-start justify-between mb-4">
         {/* Avatar + name */}
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
-            {getInitials(staff.name)}
+          <div className="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-2xl">
+            👤
           </div>
           <div>
             <p className="font-semibold text-stone-800 text-sm">{staff.name}</p>

@@ -33,9 +33,6 @@ function profColor(p: string) {
   return PROFESSION_COLORS[p] ?? "bg-stone-100 text-stone-600";
 }
 
-function initials(name: string) {
-  return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-}
 
 // ── sub-components ─────────────────────────────────────────────────────────
 
@@ -58,8 +55,8 @@ function StaffRow({
       {/* Staff header row */}
       <div className="flex items-center gap-4 px-5 py-4">
         {/* Avatar */}
-        <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-          <span className="text-amber-700 font-bold text-sm">{initials(staff.name)}</span>
+        <div className="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-2xl">
+          👤
         </div>
 
         {/* Info */}

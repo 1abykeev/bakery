@@ -2,10 +2,11 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import api from "@/lib/api";
 import { Product } from "@/types";
 
@@ -21,6 +22,10 @@ interface Props {
 }
 
 export default function ProductAddModal({ onClose, onAdded }: Props) {
+  const [emoji, setEmoji] = useState("🧁");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormInput>({
     resolver: zodResolver(schema),
   });
@@ -31,9 +36,24 @@ export default function ProductAddModal({ onClose, onAdded }: Props) {
     return () => window.removeEventListener("keydown", fn);
   }, [onClose]);
 
+  useEffect(() => {
+    const fn = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    if (pickerOpen) document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, [pickerOpen]);
+
+  function onEmojiClick(data: EmojiClickData) {
+    setEmoji(data.emoji);
+    setPickerOpen(false);
+  }
+
   async function onSubmit(data: FormInput) {
     try {
-      const res = await api.post<Product>("/products/", data);
+      const res = await api.post<Product>("/products/", { ...data, emoji });
       onAdded(res.data);
     } catch {
       alert("Продукт кошуу мүмкүн болгон жок.");
@@ -55,12 +75,39 @@ export default function ProductAddModal({ onClose, onAdded }: Props) {
             </svg>
           </button>
         </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Emoji picker */}
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-1.5">Эмодзи</label>
+            <div className="relative" ref={pickerRef}>
+              <button
+                type="button"
+                onClick={() => setPickerOpen((v) => !v)}
+                className="w-14 h-14 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-3xl flex items-center justify-center transition"
+              >
+                {emoji}
+              </button>
+              {pickerOpen && (
+                <div className="absolute top-16 left-0 z-50">
+                  <EmojiPicker
+                    onEmojiClick={onEmojiClick}
+                    theme={Theme.LIGHT}
+                    searchPlaceholder="Издөө..."
+                    height={380}
+                    width={320}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1.5">Продукттун аты</label>
             <input {...register("name")} placeholder="Пончик, Торт, Нан..." className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent text-sm transition" />
             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
           </div>
+
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1.5">Сатуу баасы</label>
             <div className="relative">
@@ -69,6 +116,7 @@ export default function ProductAddModal({ onClose, onAdded }: Props) {
             </div>
             {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
           </div>
+
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose} className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-medium text-sm hover:bg-stone-50 transition">Жокко чыгаруу</button>
             <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold text-sm transition shadow-sm shadow-amber-200">

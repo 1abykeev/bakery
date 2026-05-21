@@ -44,6 +44,7 @@ export interface ProductExpense {
 export interface Product {
   id: number;
   name: string;
+  emoji: string;
   price: string;
   stock: number;
   expenses: ProductExpense[];

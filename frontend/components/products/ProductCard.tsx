@@ -9,9 +9,6 @@ interface Props {
   onDelete: (id: number) => void;
 }
 
-function getInitials(name: string) {
-  return name.slice(0, 2).toUpperCase();
-}
 
 export default function ProductCard({ product, onDelete }: Props) {
   const totalCost = product.expenses.reduce((sum, pe) => sum + parseFloat(pe.cost), 0);
@@ -21,8 +18,8 @@ export default function ProductCard({ product, onDelete }: Props) {
     <div className="bg-white border border-stone-100 rounded-2xl p-5 hover:shadow-md hover:shadow-stone-100 transition-all duration-200 group">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
-            {getInitials(product.name)}
+          <div className="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-2xl">
+            {product.emoji || "🧁"}
           </div>
           <div>
             <p className="font-semibold text-stone-800 text-sm">{product.name}</p>

@@ -83,8 +83,8 @@ export default function SalesPage() {
                   >
                     {/* Left: product info */}
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
-                        {product.name.slice(0, 2).toUpperCase()}
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-xl">
+                        {product.emoji || "🧁"}
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-stone-800">{product.name}</p>
@@ -135,8 +135,8 @@ export default function SalesPage() {
                     className="flex items-center justify-between px-5 py-3.5 bg-white border border-stone-100 rounded-xl"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-green-100 text-green-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
-                        {sale.product_name.slice(0, 2).toUpperCase()}
+                      <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 text-base">
+                        🧾
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-stone-800">
